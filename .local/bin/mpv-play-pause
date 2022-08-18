@@ -1,0 +1,12 @@
+#!/bin/sh
+# This shell script is PUBLIC DOMAIN. You may do whatever you want with it.
+
+TOGGLE=/tmp/mpv-play-pause
+
+if [ ! -e $TOGGLE ]; then
+    touch $TOGGLE
+    playerctl --player=mpv pause && notify-send "MPV" "Pause"
+else
+    rm $TOGGLE
+    playerctl --player=mpv play && notify-send "MPV" "Play"
+fi

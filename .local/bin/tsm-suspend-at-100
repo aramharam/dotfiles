@@ -1,0 +1,14 @@
+#!/bin/bash
+#username="sagaSTEELS"  # Transmission remote username
+#password="PHILIPSfmtaal"   # Transmission remote password
+##sleep 1
+## default display on current host
+#DISPLAY=:0.0
+## authorize transmission
+#trsm="transmission-remote --auth $username:$password"
+## find out number of torrent
+
+count=$(transmission-remote --list | sed '1d;$d' | grep -w '100%' | wc -l)
+if [ $count -eq $(transmission-remote --list | sed '1d;$d' | wc -l)  ]; then
+	sudo systemctl suspend
+fi

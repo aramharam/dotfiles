@@ -1,0 +1,23 @@
+#!/bin/sh
+
+category="$(ls -d */ | dmenu -l 20 -i -p 'menu:')"
+
+if echo $category | grep -w Desktop
+then
+	ls Desktop/ | dmenu -l 20 -i -p 'submenu:'
+elif echo $category | grep -w Documents
+then
+	ls Documents/
+elif echo $category | grep -w Downloads
+then
+	ls Downloads/
+elif echo $category | grep -w Templates
+then
+	ls Templates/
+elif echo $category | grep -w vimwiki
+then
+	ls vimwiki/
+elif echo $category | grep -w z
+then
+	ls z/
+fi

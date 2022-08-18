@@ -1,0 +1,146 @@
+#!/bin/sh
+
+
+
+#query=$(printf '%s' "$*" | tr ' ' '+' )
+#movie=$(curl -s https://1337x.wtf/search/$query/1/ | grep -Eo "torrent\/[0-9]{7}\/[a-zA-Z0-9?%-]*/" | head -n 1)
+#magnet=$(curl -s https://1337x.wtf/$movie | grep -Po "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
+#peerflix -l -k $magnet
+#webtorrent "$magnet" --mpv
+
+
+
+
+#query=$(printf '%s' "$*" | tr ' ' '+' )
+
+#query=$(dmenu -p "search: " <&-)
+#queryy="$(echo $query | sed 's/ /+/g')"
+#movie=$(curl -s https://1337x.to/search/"$queryy"/1/ | grep -Eo "torrent\/[0-9]{7}\/[a-zA-Z0-9?%-]*/" | head -n 1)
+#magnet=$(curl -s https://1337x.to/"$movie" | grep -Po "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
+#peerflix -l -k $magnet
+#webtorrent "$magnet" --mpv
+
+
+
+
+menu="rofi -show -dmenu -p "
+useRofi=false # change to false to use dmenu instead of rofi as input
+player=mpv # default player is vlc
+baseurl="https://1337x.to"
+cachedir="$HOME/.cache/notflix"
+notify=true
+
+
+setup() {
+  mkdir -p $cachedir
+}
+
+cleanup() {
+  rm -r $cachedir
+}
+
+notify() {
+  echo "notflix:" "$1"
+  [ "$notify" = true ] && notify-send "notflix." "$1"
+}
+
+isInstalled() {
+	command -v "$1" 2>/dev/null>&2
+}
+
+die() {
+  notify "$1"
+  exit 1
+}
+
+checkDependencies() {
+  isInstalled "webtorrent" || die "could not find webtorrent."
+  isInstalled "rofi" || useRofi=false # use dmenu if rofi is not found
+  isInstalled "vlc"  || player=mpv # use mpv if vlc is not found
+  isInstalled "notify-send" || notify=false # only use 'echo' to display messages if libnotify-dev is not found
+
+  if [ "$player" == "mpv" ]; then # if either vlc was not found or mpv was set as the player, exit if mpv is not found
+    isInstalled "mpv" || die "could not find vlc/mpv."
+    echo "notflix: using mpv instead of vlc."
+    # if using mpv, only notify through cli, as it could have been set this way by the user.
+  fi
+
+  if [ "$useRofi" = false ]; then
+    isInstalled "dmenu" || die "could not find rofi/dmenu."
+    echo "notflix: using dmenu instead of rofi."
+  fi
+}
+
+checkConnection() {
+  result=$(curl -s -o /dev/null -w "%{http_code}" $baseurl)
+  failed=false
+  [ "$result" == "200" ] || failed=true
+  [ "$failed" = false ] || baseurl="https://1337x.gd/"
+  [ "$failed" = false ] || result=$(curl -s -o /dev/null -w "%{http_code}" $baseurl)
+  [ "$result" == "200" ] || die "could not connect to 1337x."
+}
+
+checkDependencies
+checkConnection
+setup
+
+if [ "$useRofi" = false ]; then
+  query=$(dmenu -p "search: " <&-)
+  menu="dmenu -i -l 25"
+else
+  query=$($menu "search")
+  menu+=" select"
+fi
+
+
+[ -z "$query" ] && exit 0 # silently exit if user quits
+query="$(echo $query | sed 's/ /+/g')" # format query
+curl -s $baseurl/search/$query/1/ > $cachedir/tmp.html # cache query from 1337x
+
+# grep titles
+grep -o '<a href="/torrent/.*</a>' $cachedir/tmp.html |
+  sed 's/<[^>]*>//g' > $cachedir/titles.bw
+# check amount of magnets found
+result_count=$(wc -l $cachedir/titles.bw | awk '{print $1}')
+if [ "$result_count" -lt 1 ]; then
+  die "no result found."
+fi
+
+# get seeders and leechers for each magnet
+grep -o '<td class="coll-2 seeds.*</td>\|<td class="coll-3 leeches.*</td>' $cachedir/tmp.html |
+  sed 's/<[^>]*>//g' | sed 'N;s/\n/ /' > $cachedir/seedleech.bw
+
+# get disk size of torrent
+grep -o '<td class="coll-4 size.*</td>' $cachedir/tmp.html |
+  sed 's/<span class="seeds">.*<\/span>//g' |
+  sed -e 's/<[^>]*>//g' > $cachedir/size.bw
+
+# get magnet links
+grep -E '/torrent/' $cachedir/tmp.html |
+  sed -E 's#.*(/torrent/.*)/">.*/#\1#' |
+  sed 's/td>//g' > $cachedir/links.bw
+
+# clear up data to display
+sed 's/\./ /g; s/\-/ /g' $cachedir/titles.bw |
+  sed 's/[^A-Za-z0-9 ]//g' | tr -s " " > $cachedir/tmp && mv $cachedir/tmp $cachedir/titles.bw
+
+awk '{print NR " - ["$0"]"}' $cachedir/size.bw > $cachedir/tmp && mv $cachedir/tmp $cachedir/size.bw
+awk '{print "[S:"$1 ", L:"$2"]" }' $cachedir/seedleech.bw > $cachedir/tmp && mv $cachedir/tmp $cachedir/seedleech.bw
+
+# Getting the line number
+LINE=$(paste -d\   $cachedir/size.bw $cachedir/seedleech.bw $cachedir/titles.bw |
+  $menu |
+  cut -d\- -f1 |
+  awk '{$1=$1; print}')
+
+[ -z "$LINE" ] && exit 0 # silently exit if user didn't select anything
+url=$(head -n $LINE $cachedir/links.bw | tail -n +$LINE)
+fullURL="${baseurl}${url}/"
+
+# grab magnet link from local html
+curl -s $fullURL > $cachedir/tmp.html
+magnet=$(grep -Eo "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" $cachedir/tmp.html | head -n 1)
+
+echo "notflix: launching webtorrent."
+cleanup # cleanup before launching webtorrent
+webtorrent "$magnet" --$player --not-on-top --playlist

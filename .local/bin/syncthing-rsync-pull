@@ -1,0 +1,9 @@
+#!/bin/sh
+
+rsync -avxPr /home/ram/.Sync/vimwiki/ /home/ram/vimwiki/
+rsync -avxPr /home/ram/.Sync/College/ /home/ram/Documents/College/
+rsync -avxPr /home/ram/.Sync/Phrase.txt /home/ram/Desktop/Phrase.txt
+rsync -avxPr /home/ram/.Sync/Word.txt /home/ram/Desktop/Word.txt
+rsync -avxPr /home/ram/.Sync/todo /home/ram/.local/bin/todo
+rsync -avxPr /home/ram/.Sync/shownotes /home/ram/.local/share/shownotes
+rsync -avxPr /home/ram/.Sync/Music/ /home/ram/.Music/

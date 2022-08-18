@@ -1,0 +1,22 @@
+#!/bin/bash
+# Get minutes.
+
+minutes="$(echo '' | dmenu -p 'Remind after (in minutes):')"
+# Check that the input is a positive number of minutes.
+[ "$minutes" -ge 0 ] 2> /dev/null || exit 1
+# Get description.
+description="$(echo '' | dmenu -p 'Description:')"
+till="$(( $minutes * 60 ))"
+
+echo "$(date -d "$(date +%H:%M) $minutes minutes" +'%H%M')" - "$(date +%H%M)" | bc > /tmp/ala && printf "minutes left\n for $description\n" >> /tmp/ala
+
+touch '/tmp/some_lock_file.lock'
+  pkill -RTMIN+10 dwmblocks
+  sleep $till
+  dunstify --urgency=critical -t 600000000 "Reminder" "$description"
+  rm '/tmp/some_lock_file.lock'
+  pkill -RTMIN+10 dwmblocks
+
+if [ "$minutes" -gt 300 ]; then
+  dunstify --urgency=critical "Reminder" "The Interval is too long. Try Again"
+fi

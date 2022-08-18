@@ -1,0 +1,19 @@
+#!/bin/sh
+
+rm -rf ~/.google-drive/vimwiki
+
+google-drive-ocamlfuse ~/.google-drive
+
+mkdir ~/.google-drive/vimwiki
+
+mkdir /tmp/vimwiki
+
+rsync -avrxP --exclude='*/' /home/ram/vimwiki/ /tmp/vimwiki/
+
+cd /tmp/vimwiki/
+
+find . -iname "*.md" -exec bash -c 'mv "$0" "${0%\.md}.txt"' {} \;
+
+rsync -avrxP --exclude='*/' /tmp/vimwiki/ /home/ram/.google-drive/vimwiki/
+
+fusermount -u ~/.google-drive

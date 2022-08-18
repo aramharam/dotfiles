@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$(pgrep 'scroll-pause')" == "echo ''" ]; then
+	scroll-pause && notify-send "Auto-Scrolling Started"
+elif [ "$(pgrep 'scroll-pause')" == "echo '1234567890'" ]; then
+	scroll-pause && kill -CONT $(pgrep 'scroll-pause') && notify-send "Auto-Scrolling Paused"
+fi

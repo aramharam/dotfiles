@@ -1,0 +1,13 @@
+#!/bin/sh
+
+mkdir -p /home/ram/.Sync/vimwiki
+mkdir -p /home/ram/.Sync/College
+mkdir -p /home/ram/.Sync/Music
+
+rsync -avxPr /home/ram/vimwiki*/*.md /home/ram/.Sync/vimwiki/
+rsync -avxPr /home/ram/Documents/College/ /home/ram/.Sync/College/
+rsync -avxPr /home/ram/Desktop/Phrase.txt /home/ram/.Sync
+rsync -avxPr /home/ram/Desktop/Word.txt /home/ram/.Sync
+rsync -avxPr /home/ram/.local/bin/todo /home/ram/.Sync
+rsync -avxPr /home/ram/.local/share/shownotes /home/ram/.Sync
+rsync -avxPr /home/ram/.Music/ /home/ram/.Sync/Music/

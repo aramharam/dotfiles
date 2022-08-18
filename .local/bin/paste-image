@@ -1,0 +1,3 @@
+#!/bin/sh
+
+xclip -selection clipboard -t image/png -o > $HOME/$(echo "" | dmenu -p 'Paste-Image Name:'|sed 's/ /-/g').png

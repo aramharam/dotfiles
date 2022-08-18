@@ -1,0 +1,12 @@
+#!/bin/sh
+# This shell script is PUBLIC DOMAIN. You may do whatever you want with it.
+
+TOGGLE=/tmp/repeat-toggle
+
+if [ ! -e $TOGGLE ]; then
+    touch $TOGGLE
+    mocp -u repeat | notify-send "Mocp" "Repeat Off"
+else
+    rm $TOGGLE
+    mocp -o repeat | notify-send "Mocp" "Repeat On"
+fi

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+current=$(free --mebi | sed -n '2{p;q}' | awk '{printf ("%2.2f\n", ( $3 / 1024), ($2 / 1024))}' | sed 's/...$//')
+
+if [ "$current" -ge "8" ];
+then
+	killall axel && axel -n 20 'https://download191.uploadhaven.com/1/application/zip/ehU7MnGQsEhgKdsjwo3n114TrQ4dhfuXgxKogB8G.zip?key=GmCk2Pt8mbkPhLL4fvwaRQ&expire=1651949371&filename=CallofDutyGhosts.zip' &&  notify-send "Ram is boiling"
+else
+   	notify-send "Ram is not high enough"
+fi

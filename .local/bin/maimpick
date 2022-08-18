@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# This is bound to Shift+PrintScreen by default, requires maim. It lets you
+# choose the kind of screenshot to take, including copying the image or even
+# highlighting an area to copy. scrotcucks on suicidewatch right now.
+
+case "$(printf "a selected area\\ncurrent window\\nfull screen\\na selected area (copy)\\ncurrent window (copy)\\nfull screen (copy)" | dmenu -l 6 -i -p "Screenshot which area?")" in
+	"a selected area") var=$HOME/pic-$(date '+%d-%m-%y-%H_%M_%S').png; maim -s -u -m 10 "$var"; convert -resize 40x40 $var /tmp/screen.png; copy="xclip -selection clipboard -t image/png -i /tmp/screen.png"; notify-send "Screenshot captured" -t 3000 -i "/tmp/screen.png" && rm /tmp/screen.png ;;
+	"current window") var=$HOME/pic-$(date '+%d-%m-%y-%H_%M_%S').png; maim -u -i -m 10 "$(xdotool getactivewindow)" $var ;convert -resize 40x40 $var /tmp/screen.png; copy="xclip -selection clipboard -t image/png -i /tmp/screen.png"; notify-send "Screenshot captured" -t 3000 -i "/tmp/screen.png" && rm /tmp/screen.png ;;
+	"full screen") maim -u pic-full-"$(date '+%d-%m-%y-%H_%M_%S').png" ;;
+	"a selected area (copy)") maim -u -s | xclip -selection clipboard -t image/png ;;
+	"current window (copy)") maim -u -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png ;;
+	"full screen (copy)") maim -u | xclip -selection clipboard -t image/png ;;
+esac

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+while :; do
+	/home/ram/.local/bin/memory-limit
+	sleep 60
+done
+
+nohup /home/ram/.local/bin/memory-limit > /dev/null

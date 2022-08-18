@@ -1,0 +1,8 @@
+#!/bin/sh
+
+while :; do
+	/home/ram/.local/bin/tsm-suspend-at-100
+	sleep 30
+done
+
+nohup /home/ram/.local/bin/tsm-suspend-at-100  > /dev/null

@@ -1,0 +1,14 @@
+Tmp ~/Templates
+Dow ~/Downloads
+d   ~/Documents
+m   ~/.Music
+mn  /mnt
+h   ~/
+cac ${XDG_CACHE_HOME:-$HOME/.cache}
+cf  ${XDG_CONFIG_HOME:-$HOME/.config}
+dt  ${XDG_DATA_HOME:-$HOME/.local/share}
+rr  ${XDG_DATA_HOME:-$HOME/.local/src}
+sc  $HOME/.local/bin
+src $HOME/.local/src
+
+# You can add comments to these files with #

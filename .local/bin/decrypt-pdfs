@@ -1,0 +1,9 @@
+#!/bin/bash
+pw=xaamadda.com
+dirs=$(ls -D1)
+        for file in *.pdf; do
+                newfile=${file%.pdf}
+                newfile=$newfile.decrypted.pdf
+                qpdf --decrypt --password=$pw "$file" "$newfile"
+                rm "$file"
+                done

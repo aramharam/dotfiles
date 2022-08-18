@@ -1,0 +1,75 @@
+# abook addressbook file
+
+[format]
+program=abook
+version=0.6.1
+
+
+[0]
+name=Rahul Jangir College
+phone=7232805471
+mobile=6367093218
+
+[1]
+name=Kuldeep College
+mobile=8094600693
+
+[2]
+name=Sachin College
+mobile=8955142300
+
+[3]
+name=Hoshiyar Sir College
+mobile=9413888907
+
+[4]
+name=Vinod College
+mobile=9413874054
+
+[5]
+name=Kachar Romesh
+mobile=9511539740
+
+[6]
+name=Vikas Poonia
+phone=7426890317
+mobile=7877023184
+
+[7]
+name=Ankit Shekhawat
+mobile=8209439387
+
+[8]
+name=Abhinav Chahar
+phone=9468527357
+mobile=9817084499
+
+[9]
+name=Sahil Shahran
+mobile=9588066152
+
+[10]
+name=Dilkhush Rajasthan Public School
+mobile=01592-233655
+
+[11]
+name=Siddharth Running
+phone=8696753149
+
+[12]
+name=Anil Beniwal
+phone=9024260416
+
+[13]
+name=Madhusudhan College
+phone=8949599476
+
+[14]
+name=Sonu Taranagar
+phone=8209141704
+workphone=8306363283
+
+[15]
+name=Punit Choradiya Computers
+phone=9414894278
+

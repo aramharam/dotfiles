@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# This file runs when a DM logs you into a graphical session.
+# If you use startx/xinit like a Chad, this file will also be sourced.
+
+xrandr --dpi 92		# Set DPI. User may want to use a larger number for larger screens.
+#setbg &			# set the background with the `setbg` script
+#xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources & xrdbpid=$!	# Uncomment to use Xresources colors/settings on startup
+remaps &		# run the remaps script, switching caps/esc and more; check it for more info
+redshift &
+clipmenud &
+sxhkd &
+keynav &
+xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources &	# Uncomment to use Xresources colors/settings on startup
+unclutter --timeout 10 &		# Remove mouse when idle
+#/usr/lib/kdeconnectd &
+#kdeconnect-indicator &
+#syncthing &
+pactl set-card-profile 1 output:analog-stereo &
+#rnnoise activate &
+#mpd &			# music player daemon-you might prefer it as a service though
+#mpc search title kaushik | mpc add && mpc play &
+#transmission-daemon &
+#classical &
+#geet &
+#instrumental &
+#ibus-daemon -d &
+#wallpaper-change &
+#find . -type d \( -path ./.local/lib -o -path ./.Desktop/Topper/vision \) -prune -false -o -type f &
+#mocp -S && mocp -p -t r -v 30 /home/ram/.Music/art-of-rally/* &
+#mocp -S && mocp -p -t r -v 30 /home/ram/.Music/Xzibit\ -\ Paparazzi\ \(Instrumental\).opus &
+xidlehook --not-when-fullscreen --not-when-audio --timer 120 'xrandr --output DisplayPort-0 --off' 'xrandr --output DisplayPort-0 --auto' &
+#while :; do internet-limit; sleep 5m; done &
+
+
+
+
+
+
+
+autostart="xcompmgr dunst pipewire"
+
+for program in $autostart; do
+	pidof -s "$program" || "$program" &
+done >/dev/null 2>&1
+
+# Ensure that xrdb has finished running before moving on to start the WM/DE.
+[ -n "$xrdbpid" ] && wait "$xrdbpid"

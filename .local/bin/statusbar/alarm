@@ -1,0 +1,8 @@
+#!/bin/bash
+#echo "⏲️ "
+echo "⏰"
+
+case $BLOCK_BUTTON in
+    1) notify-send -t 12000 "⏰ Alarm Dmenu" "$(echo $(sed -n '3p' /tmp/ala))" ;;
+    3) notify-send -t 12000 "⏰ Alarm Dmenu" "$(echo $(cat /tmp/ala) )" ;;
+esac

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#colorpicker --short --one-shot --preview | tr -d '\n' |  xclip -selection clipboard
+
+var=$(colorpicker --short --one-shot --preview | awk -F 'd' '{ print tolower($1)}');
+echo "$var";
+echo "$var" |tr -d '\n' | xclip -selection clipboard; notify-send  "Color Picker" "<span color='$var' font='26px'><b>$var</b></span>";

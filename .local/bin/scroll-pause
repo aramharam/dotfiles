@@ -1,0 +1,13 @@
+#!/bin/sh
+while true; do xdotool key Page_Down; sleep 3; done
+#export APP_PID=$!
+
+#TOGGLE=$HOME/.trpi
+#
+#if [ ! -e $TOGGLE ]; then
+#    touch $TOGGLE
+#    while true; do xdotool key Page_Down; sleep 300; done
+#else
+#    rm $TOGGLE
+#    echo 'asd'
+#fi
